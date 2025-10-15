@@ -2,7 +2,7 @@
 # Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/WindowsService/v15
+.vs/WindowsService/v15
 # Visual Studio
 .vs/
 *.user
