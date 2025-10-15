@@ -1,7 +1,7 @@
 ﻿################################################################################
 # Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
 ################################################################################
-
+.vs/WindowsService
 .vs/WindowsService/v15
 # Visual Studio
 .vs/
