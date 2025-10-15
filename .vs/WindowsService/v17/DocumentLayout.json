@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\SOFTBRILLIANCE\\PROYECTOS BASE\\WindowsService\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{74D41493-8620-428E-9C02-73FE5A88C63F}|ws_base_netframework_4.7.2\\WindowsService.csproj|d:\\softbrilliance\\proyectos base\\windowsservice\\ws_base_netframework_4.7.2\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{74D41493-8620-428E-9C02-73FE5A88C63F}|ws_base_netframework_4.7.2\\WindowsService.csproj|solutionrelative:ws_base_netframework_4.7.2\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": ".gitignore",
+              "DocumentMoniker": "D:\\SOFTBRILLIANCE\\PROYECTOS BASE\\WindowsService\\ws_base_netframework_4.7.2\\.gitignore",
+              "RelativeDocumentMoniker": "ws_base_netframework_4.7.2\\.gitignore",
+              "ToolTip": "D:\\SOFTBRILLIANCE\\PROYECTOS BASE\\WindowsService\\ws_base_netframework_4.7.2\\.gitignore",
+              "RelativeToolTip": "ws_base_netframework_4.7.2\\.gitignore",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2025-10-15T20:20:56.2Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
