@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using WindowsService.Domain;
+using WindowsService.Infrastructure.Helpers;
 
 namespace WindowsService.Infrastructure.DataAccess
 {
