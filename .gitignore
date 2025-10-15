@@ -1,0 +1,28 @@
+﻿################################################################################
+# Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/WindowsService/v15
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# IDEs
+.vscode/
+.idea/
+
+# Compilados
+[Bb]in/
+[Oo]bj/
+TestResults/
+artifacts/
+
+# NuGet
+packages/
+*.nupkg
+project.lock.json
+
+/NUL
