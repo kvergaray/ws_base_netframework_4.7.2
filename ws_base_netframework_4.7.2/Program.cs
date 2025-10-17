@@ -1,25 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WindowsService
 {
     internal static class Program
     {
         /// <summary>
-        /// Punto de entrada principal para la aplicación.
+        /// Punto de entrada principal para la aplicacion.
         /// </summary>
-        static void Main()
+        private static void Main(string[] args)
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
+            if (Environment.UserInteractive)
             {
-                new Service1()
-            };
-            ServiceBase.Run(ServicesToRun);
+                using (var service = new Service1())
+                {
+                    try
+                    {
+                        service.RunConsole(args);
+                        Console.WriteLine("Ejecucion completada. Revise los registros en la carpeta Logs.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error durante la ejecucion manual: " + ex.Message);
+                    }
+                    finally{
+                        Console.WriteLine("Presione cualquier tecla para salir...");
+                    }  
+                }
+
+                return;
+            }
+            else
+            {
+                ServiceBase.Run(new ServiceBase[]
+                {
+                    new Service1()
+                });
+            }
         }
     }
 }

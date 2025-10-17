@@ -1,24 +1,29 @@
 ﻿using System;
-
+using log4net;
 
 namespace WindowsService.Infrastructure.Helpers
-{    public static class LogHelper
+{
+    public static class LogHelper
     {
+        private static readonly ILog Logger = LogManager.GetLogger("AppLogger");
+
         public static void Info(string message)
         {
-            log4net.LogManager.GetLogger("AppLogger").Info(message);
-        }
-
-        public static void Error(string message, Exception ex = null)
-        {
-            var logger = log4net.LogManager.GetLogger("AppLogger");
-            logger.Error(message);
-            if (ex != null) logger.Error(ex);
+            Logger.Info(message);
         }
 
         public static void Warn(string message)
         {
-            log4net.LogManager.GetLogger("AppLogger").Warn(message);
+            Logger.Warn(message);
+        }
+
+        public static void Error(string message, Exception ex = null)
+        {
+            Logger.Error(message);
+            if (ex != null)
+            {
+                Logger.Error(ex);
+            }
         }
     }
 }

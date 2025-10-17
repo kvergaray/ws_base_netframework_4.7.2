@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using WindowsService.Domain;
@@ -12,9 +12,25 @@ namespace WindowsService.Infrastructure.DataAccess
     {
         private readonly string _connectionString;
 
-        public UserRepository(IConfiguration configuration)
+        public UserRepository(string connectionString)
         {
-            _connectionString = configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new ArgumentException("La cadena de conexion no puede ser nula o vacia.", nameof(connectionString));
+            }
+
+            _connectionString = connectionString;
+        }
+
+        public static UserRepository FromConfig(string connectionName)
+        {
+            var connection = ConfigurationManager.ConnectionStrings[connectionName]?.ConnectionString;
+            if (string.IsNullOrWhiteSpace(connection))
+            {
+                throw new InvalidOperationException($"No se encontro la cadena de conexion '{connectionName}' en la configuracion de la aplicacion.");
+            }
+
+            return new UserRepository(connection);
         }
 
         public List<UserListarDto> GetUsersToProcess(int cant)
