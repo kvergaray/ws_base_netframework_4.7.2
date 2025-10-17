@@ -20,6 +20,12 @@ Servicio Windows parametrizable para ejecutar tareas programadas contra SQL Serv
 - SQL Server con la base de datos y el procedimiento almacenado esperados por `UserRepository`.
 - Acceso al `InstallUtil.exe` del framework (normalmente en `%WINDIR%\Microsoft.NET\Framework64\v4.0.30319`).
 
+## Base de datos de ejemplo
+
+- En la raiz del repositorio se encuentra `script.sql`, que crea la base de datos y el procedimiento `[PRUEBA].[sp_GetUsuarioXIntento]` usados durante las pruebas.
+- Ejecute el script desde SQL Server Management Studio o sqlcmd en un entorno de desarrollo para preparar los datos iniciales.
+- Ajuste los nombres de servidor, credenciales y base de datos segun su entorno antes de ejecutarlo.
+
 ## Configuracion
 
 ### App.config (`<appSettings>`)
