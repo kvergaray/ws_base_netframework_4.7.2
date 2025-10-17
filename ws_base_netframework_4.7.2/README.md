@@ -70,9 +70,9 @@ Ejecute los siguientes comandos desde una consola con privilegios elevados:
 
 ```powershell
 cd C:\Windows\Microsoft.NET\Framework64\v4.0.30319
-installutil.exe -i "RUTA\AL\PROYECTO\ws_base_netframework_4.7.2\bin\Release\WindowsService.exe"
+installutil.exe -i "RUTA\AL\PROYECTO\ws_base_netframework_4.7.2\bin\Debug\WindowsService.exe"
 # Para desinstalar:
-installutil.exe -u "RUTA\AL\PROYECTO\ws_base_netframework_4.7.2\bin\Release\WindowsService.exe"
+installutil.exe -u "RUTA\AL\PROYECTO\ws_base_netframework_4.7.2\bin\Debug\WindowsService.exe"
 ```
 
 Reemplace `RUTA\AL\PROYECTO` por la ruta real del ejecutable compilado. Administre el servicio con `services.msc` o mediante `Get-Service`.
