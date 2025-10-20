@@ -16,7 +16,7 @@ namespace WindowsService
                 {
                     try
                     {
-                        service.RunConsole(args);
+                        service.RunConsoleAsync(args).GetAwaiter().GetResult();
                         Console.WriteLine("Ejecucion completada. Revise los registros en la carpeta Logs.");
                     }
                     catch (Exception ex)

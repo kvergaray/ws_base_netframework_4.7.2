@@ -1,5 +1,8 @@
-﻿using System;
+using System;
+using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
+using WindowsService.Domain;
 using WindowsService.Infrastructure.DataAccess;
 using WindowsService.Infrastructure.Helpers;
 
@@ -7,21 +10,26 @@ namespace WindowsService.Services
 {
     public class TaskService
     {
-        private readonly UserRepository _usuarioRepo;
+        private readonly IUserRepository _usuarioRepo;
         private readonly int _maxIntentos;
 
-        public TaskService(UserRepository usuarioRepo, int maxIntentos)
+        public TaskService(IUserRepository usuarioRepo, int maxIntentos)
         {
-            _usuarioRepo = usuarioRepo ?? throw new ArgumentNullException(nameof(usuarioRepo));
-            if (maxIntentos <= 0)
+            if (usuarioRepo == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(maxIntentos), "El numero maximo de intentos debe ser mayor que cero.");
+                throw new ArgumentNullException("usuarioRepo");
             }
 
+            if (maxIntentos <= 0)
+            {
+                throw new ArgumentOutOfRangeException("maxIntentos", "El numero maximo de intentos debe ser mayor que cero.");
+            }
+
+            _usuarioRepo = usuarioRepo;
             _maxIntentos = maxIntentos;
         }
 
-        public void Inicio(CancellationToken cancellationToken = default)
+        public async Task InicioAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             if (cancellationToken.IsCancellationRequested)
             {
@@ -29,16 +37,25 @@ namespace WindowsService.Services
                 return;
             }
 
-            var usuarioNotif = _usuarioRepo.GetUsersToProcess(_maxIntentos);
+            IReadOnlyList<UserListarDto> usuarioNotif;
+            try
+            {
+                usuarioNotif = await _usuarioRepo.GetUsersToProcessAsync(_maxIntentos, cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                LogHelper.Warn("Obtencion de usuarios cancelada antes de iniciar el procesamiento.");
+                return;
+            }
 
-            if (usuarioNotif == null || usuarioNotif.Count <= 0)
+            if (usuarioNotif == null || usuarioNotif.Count == 0)
             {
                 LogHelper.Info("No hay poblacion a procesar.");
                 return;
             }
 
             var total = usuarioNotif.Count;
-            LogHelper.Info($"Iniciando procesamiento de {total} notificacion(es). Intentos maximos: {_maxIntentos}");
+            LogHelper.Info(string.Format("Iniciando procesamiento de {0} notificacion(es). Intentos maximos: {1}", total, _maxIntentos));
 
             foreach (var un in usuarioNotif)
             {
@@ -54,11 +71,11 @@ namespace WindowsService.Services
                     continue;
                 }
 
-                LogHelper.Info($"******** {un.nombres} con usuario: {un.usuario} (id: {un.idUsuario}) ********");
+                LogHelper.Info(string.Format("******** {0} con usuario: {1} (id: {2}) ********", un.nombres, un.usuario, un.idUsuario));
 
                 if (string.IsNullOrWhiteSpace(un.email))
                 {
-                    LogHelper.Error($"Procesamiento a {un.usuario}: correo vacio o nulo. Se omite.");
+                    LogHelper.Error(string.Format("Procesamiento a {0}: correo vacio o nulo. Se omite.", un.usuario));
                     continue;
                 }
 
@@ -70,33 +87,40 @@ namespace WindowsService.Services
                     intento++;
                     try
                     {
-                        LogHelper.Info($"Notificacion {un.usuario}: intento {intento} de {_maxIntentos}.");
+                        LogHelper.Info(string.Format("Notificacion {0}: intento {1} de {2}.", un.usuario, intento, _maxIntentos));
 
-                        // Aqui va tu logica de envio
-                        //List<string> arrAttachmentPath = new List<string>();
-                        //enviado = MessagingClient.SendMail("",
-                        //    _msgConfig.From, _msgConfig.To, _msgConfig.Cc, _msgConfig.Bcc, _msgConfig.Asunto, arrAttachmentPath.ToArray());
+                        await SimulateSendAsync(cancellationToken).ConfigureAwait(false);
 
-                        LogHelper.Info($"Procesamiento a {un.usuario}: OK en {intento} intento(s).");
+                        LogHelper.Info(string.Format("Procesamiento a {0}: OK en {1} intento(s).", un.usuario, intento));
                         enviado = true;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        LogHelper.Warn(string.Format("Procesamiento a {0}: cancelado durante el intento {1}.", un.usuario, intento));
+                        return;
                     }
                     catch (Exception ex)
                     {
-                        LogHelper.Error($"Procesamiento a {un.idUsuario}: error en intento {intento}.", ex);
+                        LogHelper.Error(string.Format("Procesamiento a {0}: error en intento {1}.", un.idUsuario, intento), ex);
 
                         if (intento >= _maxIntentos)
                         {
-                            LogHelper.Error($"Procesamiento a {un.usuario}: agoto reintentos ({_maxIntentos}). Marcado como fallido.");
+                            LogHelper.Error(string.Format("Procesamiento a {0}: agoto reintentos ({1}). Marcado como fallido.", un.usuario, _maxIntentos));
                         }
                     }
                 }
 
                 if (!enviado && cancellationToken.IsCancellationRequested)
                 {
-                    LogHelper.Warn($"Procesamiento a {un.usuario}: cancelado por solicitud del servicio.");
+                    LogHelper.Warn(string.Format("Procesamiento a {0}: cancelado por solicitud del servicio.", un.usuario));
                 }
             }
         }
 
+        private static async Task SimulateSendAsync(CancellationToken cancellationToken)
+        {
+            await Task.CompletedTask.ConfigureAwait(false);
+            cancellationToken.ThrowIfCancellationRequested();
+        }
     }
 }

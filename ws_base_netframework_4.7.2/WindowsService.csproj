@@ -92,7 +92,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\UserDto.cs" />
+    <Compile Include="Infrastructure\DataAccess\IUserRepository.cs" />
     <Compile Include="Infrastructure\DataAccess\UserRepository.cs" />
+    <Compile Include="Infrastructure\Helpers\DataReaderHelper.cs" />
     <Compile Include="Infrastructure\Helpers\LogHelper.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
@@ -113,9 +115,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include=".gitignore" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

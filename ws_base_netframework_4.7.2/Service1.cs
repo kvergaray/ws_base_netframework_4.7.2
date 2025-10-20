@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using System.ServiceProcess;
 using System.Threading;
+using System.Threading.Tasks;
 using WindowsService.Infrastructure.DataAccess;
 using WindowsService.Infrastructure.Helpers;
 using WindowsService.Services;
@@ -44,7 +45,7 @@ namespace WindowsService
             StopInternal(false);
         }
 
-        public void RunConsole(string[] args)
+        public async Task RunConsoleAsync(string[] args)
         {
             LogHelper.Info("*************** Ejecucion manual (modo consola) ***************");
             EnsureLogDirectory();
@@ -60,7 +61,7 @@ namespace WindowsService
                 LogHelper.Info($"Modo configurado: {modeDetail}.");
                 LogHelper.Info($"Si se ejecuta como servicio, la proxima ejecucion ocurriria en {previewDelay}.");
 
-                taskService.Inicio(CancellationToken.None);
+                await taskService.InicioAsync(CancellationToken.None).ConfigureAwait(false);
                 LogHelper.Info("*************** Ejecucion manual finalizada ***************");
             }
             catch (Exception ex)
@@ -161,7 +162,7 @@ namespace WindowsService
             _timer.Change(delay, Timeout.InfiniteTimeSpan);
         }
 
-        private void OnTimerElapsed(object state)
+        private async void OnTimerElapsed(object state)
         {
             var tokenSource = _cancellation;
             if (tokenSource == null || tokenSource.IsCancellationRequested)
@@ -178,7 +179,10 @@ namespace WindowsService
             try
             {
                 LogHelper.Info("Inicio de ciclo de trabajo.");
-                _taskService?.Inicio(tokenSource.Token);
+                if (_taskService != null)
+                {
+                    await _taskService.InicioAsync(tokenSource.Token).ConfigureAwait(false);
+                }
                 LogHelper.Info("Ciclo de trabajo finalizado.");
             }
             catch (Exception ex)
@@ -289,7 +293,7 @@ namespace WindowsService
         private TaskService BuildTaskService()
         {
             var connectionName = ResolveConnectionName();
-            var repository = UserRepository.FromConfig(connectionName);
+            IUserRepository repository = UserRepository.FromConfig(connectionName);
             var maxAttempts = ResolveMaxAttempts();
             return new TaskService(repository, maxAttempts);
         }
