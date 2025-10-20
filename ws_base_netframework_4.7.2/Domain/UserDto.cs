@@ -10,7 +10,6 @@ namespace WindowsService.Domain
         public string usuario { get; set; }
 
         [JsonIgnore]
-        //[Required(ErrorMessage = "Campo contrasenia requerido")]
         public string contrasenia { get; set; }
 
         [Required(ErrorMessage = "Campo Nombres requerido")]
