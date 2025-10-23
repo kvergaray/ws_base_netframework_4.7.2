@@ -7,6 +7,7 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using WindowsService.Infrastructure.DataAccess;
+using WindowsService.Infrastructure.DataAccess.Sql;
 using WindowsService.Infrastructure.Helpers;
 using WindowsService.Services;
 
@@ -290,13 +291,13 @@ namespace WindowsService
             }
         }
 
+
         private TaskService BuildTaskService()
         {
-            var connectionName = ResolveConnectionName();
-            IUserRepository repository = UserRepository.FromConfig(connectionName);
             var maxAttempts = ResolveMaxAttempts();
-            return new TaskService(repository, maxAttempts);
+            return new TaskService( maxAttempts);
         }
+
 
         private string ResolveConnectionName()
         {

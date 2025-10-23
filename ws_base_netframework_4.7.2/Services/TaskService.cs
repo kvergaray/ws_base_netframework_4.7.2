@@ -4,28 +4,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using WindowsService.Domain;
 using WindowsService.Infrastructure.DataAccess;
+using WindowsService.Infrastructure.DataAccess.Sql;
 using WindowsService.Infrastructure.Helpers;
 
 namespace WindowsService.Services
 {
     public class TaskService
     {
-        private readonly IUserRepository _usuarioRepo;
         private readonly int _maxIntentos;
+        private IUserRepository _usuarioRepo = new UserRepositorySql();
 
-        public TaskService(IUserRepository usuarioRepo, int maxIntentos)
+        public TaskService( int maxIntentos)
         {
-            if (usuarioRepo == null)
-            {
-                throw new ArgumentNullException("usuarioRepo");
-            }
-
             if (maxIntentos <= 0)
             {
                 throw new ArgumentOutOfRangeException("maxIntentos", "El numero maximo de intentos debe ser mayor que cero.");
             }
-
-            _usuarioRepo = usuarioRepo;
             _maxIntentos = maxIntentos;
         }
 
